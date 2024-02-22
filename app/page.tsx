@@ -1,12 +1,18 @@
-'use client'
+"use client";
 import Calendar from "@/components/Calendar";
 import { update, write, read } from "@/store/firestore";
-import { useEffect} from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const date: Date = new Date();
   const dates: Date[] = [];
-
+  const [holidays, setHolidays] = useState<
+    {
+      date: Date;
+      description: string;
+      type?: "holiday"|"optional"|"applied"|"special"|"leave";
+    }[]
+  >([]);
 
   for (let index = 0; index < 41; index++) {
     const tempDate = new Date(date);
@@ -31,7 +37,11 @@ export default function Home() {
       if (snapshot.exists()) {
         const list = snapshot.val();
         const keys = Object.keys(list);
-        const holidays: { date: Date; description: string }[] = [];
+        const holidays: {
+          date: Date;
+          description: string;
+          type?: "holiday"|"optional"|"applied"|"special"|"leave";
+        }[] = [];
 
         keys.map((item, index) => {
           holidays.push({
@@ -41,18 +51,21 @@ export default function Home() {
               Number(item.substring(2, 4))
             ),
             description: list[item],
+            type: "holiday"
           });
         });
 
         holidays.sort((a, b) => (a.date > b.date ? 1 : -1));
-
+        setHolidays(holidays);
       }
     });
   }, []);
 
   return (
     <>
-      <Calendar dateSelected={dateSelected} events={events}></Calendar>
+      {/* <Associate name="Hari" des="des"></Associate>
+    {holidays?.map((item, index)=><p key={index}>{`${item.date.toLocaleDateString()} - ${item.description}`}</p>)} */}
+      <Calendar dateSelected={dateSelected} events={holidays}></Calendar>
     </>
   );
 }

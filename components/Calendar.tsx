@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
+import clsx from "clsx";
 
 const Header: React.FC = () => {
   const date = new Date();
@@ -65,7 +66,11 @@ const Weekday: React.FC = () => {
 };
 
 const Calendar: React.FC<{
-  events?: { date: Date; description: string }[];
+  events?: {
+    date: Date;
+    description: string;
+    type?: "holiday" | "optional" | "applied" | "special" | "leave";
+  }[];
   weekstart?: string;
   weekend?: string;
   dateSelected: (date: Date) => void;
@@ -80,11 +85,14 @@ const Calendar: React.FC<{
   const dateDetails = (date: Date) => {
     console.log(events);
     console.log(date);
-    const d = events?.find((item)=>item.date.getDate() === date.getDate() 
-      && item.date.getMonth() === date.getMonth() 
-      && item.date.getFullYear() === date.getFullYear())
+    const d = events?.find(
+      (item) =>
+        item.date.getDate() === date.getDate() &&
+        item.date.getMonth() === date.getMonth() &&
+        item.date.getFullYear() === date.getFullYear()
+    );
     console.log(d);
-    setI(d?.description||'');
+    setI(d?.description || "");
   };
 
   return (
@@ -92,14 +100,25 @@ const Calendar: React.FC<{
       <Header></Header>
       <Navigate date={x} navigate={dateChanged}></Navigate>
       <Weekday></Weekday>
-      <Days date={x} />
-      <Footer information=""/>
+      <Days date={x} events={events} />
+      <Footer information="" />
     </div>
   );
 };
 
-const Days: React.FC<{ date: Date }> = ({ date }) => {
-  const dates: { date: Date; current: boolean }[] = [];
+const Days: React.FC<{
+  date: Date;
+  events?: {
+    date: Date;
+    description: string;
+    type?: "holiday" | "optional" | "applied" | "special" | "leave";
+  }[];
+}> = ({ date, events }) => {
+  const dates: {
+    date: Date;
+    current: boolean;
+    type?: "holiday" | "optional" | "applied" | "special" | "leave";
+  }[] = [];
 
   let startDate = new Date(date.getFullYear(), date.getMonth(), 1);
   startDate.setDate(startDate.getDate() - ((startDate.getDay() + 6) % 7));
@@ -109,7 +128,13 @@ const Days: React.FC<{ date: Date }> = ({ date }) => {
     let tempDate = new Date(startDate);
     tempDate.setDate(tempDate.getDate() + index);
     current = tempDate.getDate() == 1 ? !current : current;
-    dates.push({ date: tempDate, current: current });
+    const event = events?.find(
+      (item) =>
+        item.date.getDate() === tempDate.getDate() &&
+        item.date.getMonth() === tempDate.getMonth() &&
+        item.date.getFullYear() === tempDate.getFullYear()
+    );
+    dates.push({ date: tempDate, current: current, type: event?.type });
   }
 
   return (
@@ -121,13 +146,24 @@ const Days: React.FC<{ date: Date }> = ({ date }) => {
   );
 };
 
-const Day: React.FC<{ date: Date; current: boolean }> = ({ date, current }) => {
+const Day: React.FC<{
+  date: Date;
+  current: boolean;
+  type?: "holiday" | "optional" | "applied" | "special" | "leave";
+}> = ({ date, current, type }) => {
   return current ? (
-    <div className="border-2 border-blue-900 rounded">
-      {date.toLocaleDateString("en-IN", { day: "2-digit" })}
+    <div className={clsx("text-center items-cente", {"bg-green-300":type==="holiday"})}>
+      <span
+        className={clsx("hover:bg-slate-300/50 rounded-full cursor-pointer")}
+      >
+        {date.toLocaleDateString("en-IN", { day: "2-digit" })}
+      </span>
     </div>
   ) : (
-    <div> {date.toLocaleDateString("en-IN", { day: "2-digit" })}</div>
+    <div className="text-gray-500/50 text-center">
+      {" "}
+      {date.toLocaleDateString("en-IN", { day: "2-digit" })}
+    </div>
   );
 };
 
