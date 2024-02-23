@@ -1,12 +1,11 @@
 import clsx from "clsx";
 import { useState } from "react";
 import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
-import clsx from "clsx";
+
 
 const Header: React.FC = () => {
   const date = new Date();
-  const date = new Date();
-
+  
   return (
     <div className="border-b border-slate-700 p-1 bg-slate-700/75">
       {date.toLocaleDateString("en-IN", {
@@ -17,9 +16,7 @@ const Header: React.FC = () => {
       })}
     </div>
   );
-};
-  );
-};
+};  
 
 const Navigate: React.FC<{ date: Date; navigate: (date: Date) => void }> = ({
   date,
@@ -54,9 +51,7 @@ const Navigate: React.FC<{ date: Date; navigate: (date: Date) => void }> = ({
     </div>
   );
 };
-  );
-};
-
+  
 const Weekday: React.FC = () => {
   return (
     <div className="grid grid-cols-7 border-b border-slate-700/75 text-sm text-center">
@@ -111,8 +106,7 @@ const Calendar: React.FC<{
     </div>
   );
 };
-  );
-};
+  
 
 const Days: React.FC<{
   date: Date;
@@ -174,8 +168,7 @@ const Day: React.FC<{
     </div>
   );
 };
-  );
-};
+  
 
 const Footer: React.FC<{ information: string }> = ({ information }) => {
   return <div>{information}</div>;
