@@ -1,8 +1,10 @@
+import clsx from "clsx";
 import { useState } from "react";
 import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
 
 const Header: React.FC = () => {
+  const date = new Date();
   const date = new Date();
 
   return (
@@ -14,6 +16,8 @@ const Header: React.FC = () => {
         weekday: "long",
       })}
     </div>
+  );
+};
   );
 };
 
@@ -48,6 +52,8 @@ const Navigate: React.FC<{ date: Date; navigate: (date: Date) => void }> = ({
         ></ChevronRightIcon>
       </div>
     </div>
+  );
+};
   );
 };
 
@@ -103,6 +109,8 @@ const Calendar: React.FC<{
       <Days date={x} events={events} />
       <Footer information="" />
     </div>
+  );
+};
   );
 };
 
@@ -166,9 +174,12 @@ const Day: React.FC<{
     </div>
   );
 };
+  );
+};
 
 const Footer: React.FC<{ information: string }> = ({ information }) => {
   return <div>{information}</div>;
 };
 
 export default Calendar;
+
