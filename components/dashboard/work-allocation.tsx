@@ -1,25 +1,12 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import PencilSquare from "@/svg/PencilSquare";
-import DeleteSvg from "@/svg/DeleteSvg";
-import axios from "axios";
 import IAllocation from "@/models/allocation";
-import AddTask from "../tasks/AddTask";
+import { format } from "date-fns";
+import { PencilIcon, TrashIcon } from "@heroicons/react/16/solid";
 
 interface Props {
-  isNewTaskAdded: boolean;
+  tasks:IAllocation[]
 }
 
-const WorkAllocation: React.FC<Props> = ({ isNewTaskAdded }) => {
-  const [tasks, setTasks] = useState<IAllocation[]>([]);
-  useEffect(() => {
-    const getAllocations = async () => {
-      const response = await axios.get("/api/tasks");
-      setTasks(response.data.data);
-    };
-    getAllocations().then();
-  }, [isNewTaskAdded]);
-
+const WorkAllocation: React.FC<Props> = ({ tasks }) => {
   const handleEdit = () => {
     alert("clicked edit");
   };
@@ -31,17 +18,36 @@ const WorkAllocation: React.FC<Props> = ({ isNewTaskAdded }) => {
   console.log(tasks);
   return (
     <>
-      <table>
+      <table className="w-full">
         <thead>
-          <tr><th>Task</th>
+          <tr className="border-b"><th>Task</th>
             <th>Start By</th>
             <th>Status</th>
+            <th>Assigned to</th>
+            <th>Created By</th>
+            <th>End by</th>
+            <th>Effort</th>
             <th>Action</th></tr>
         </thead>
         <tbody>
-          {tasks.map((task:IAllocation, index)=>(
-            <tr key={index}>
-              <td>{task.taskId} - {task.description}</td>
+          {tasks && tasks.map((task: IAllocation, index) => (
+            <tr key={index} className="border-b">
+              <td>{task.task_id} - {task.task_desc}</td>
+              <td>{format(task.start_date ? task.start_date : '', "MMM dd, yyyy")}</td>
+              <td>{task.status}</td>
+              <td>{task.assigned_to}</td>
+              <td>{task.created_by}</td>
+              <td>{format(task.end_date ? task.end_date : '', "MMM dd, yyyy")}</td>
+              <td>{task.estimate}</td>
+              <td>
+                <div className="flex flex-row">
+              <PencilIcon className="h-4 w-4 hover:text-blue-500"></PencilIcon>
+              <TrashIcon className="h-4 w-4 hover:text-red-900"></TrashIcon>
+              </div>
+              </td>
+              <td>
+              
+              </td>
             </tr>
           ))}
         </tbody>

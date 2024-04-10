@@ -4,7 +4,9 @@ import LeaveInfo from "@/components/LeaveInfo";
 import WorkAllocation from "@/components/dashboard/work-allocation";
 import AddTask from "@/components/tasks/AddTask";
 import { EventContextProvider } from "@/store/eventContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import IAllocation from "@/models/allocation";
 
 export default function Home() {
   const [date, setDate] = useState<string>("");
@@ -25,9 +27,20 @@ export default function Home() {
 
   }
 
+
+  const [tasks, setTasks] = useState<IAllocation[]>([]);
+
+  useEffect (() => {
+    const getAllocations = async () => {
+      const response = await axios.get("/api/tasks");
+      setTasks(response.data.data);
+    };
+    getAllocations().then();
+  }, []);
+
   return (
     <>
-      <div className="flex flex-row">
+      {/* <div className="flex flex-row">
         <div className="flex flex-col">
           <label className="text-xs">Project</label>
           <div className="content-center">
@@ -61,7 +74,8 @@ export default function Home() {
             />
           </div>
         </div>
-      </div>
+      </div> */}
+      <WorkAllocation tasks={tasks}></WorkAllocation>
       <EventContextProvider>
         <div className="flex flex-col">
           <div className="flex flex-row p-2">
