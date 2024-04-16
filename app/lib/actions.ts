@@ -44,16 +44,22 @@ export async function register(
     await dbConnect();
     const userAuth = {
       name: formData.get("name"),
-      email: await hashPassword(getValue(formData.get("email"))),
+      email: await hashPassword(getValue(getValue(formData.get("email")))),
       password: await hashPassword(getValue(formData.get("password"))),
     };
     const email = await hashPassword(getValue(formData.get("email")));
-    const x = await Auth.findOne({ email: email });
+    console.log(email)
+    const x = (await Auth.findOne({email}))
     console.log(x);
+    const y = await Auth.create(userAuth);
 
-    if (await Auth.findOne({ email: email })) {
+    if (
+      (await Auth.find()).filter((item) => {
+        item.email === email;
+      })
+    ) {
     } else {
-      const x = await Auth.create(userAuth);
+      
     }
   } catch (error) {
     throw error;
